@@ -23,7 +23,7 @@ namespace GP3Coursework
         //------------------------------------------
         // Added for use with fonts
         //------------------------------------------
-        SpriteFont fontToUse;
+        ////SpriteFont fontToUse;
 
         //--------------------------------------------------
         // Added for use with playing Audio via Media player
@@ -104,10 +104,10 @@ namespace GP3Coursework
             spriteBatch.Begin();
             string output = msg;
             // Find the center of the string
-            Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
-            Vector2 FontPos = msgPos;
+            ////Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
+            ////Vector2 FontPos = msgPos;
             // Draw the string
-            spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
+            ////spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
             spriteBatch.End();
         }
 
@@ -146,7 +146,7 @@ namespace GP3Coursework
             //-------------------------------------------------------------
             // added to load font
             //-------------------------------------------------------------
-            fontToUse = Content.Load<SpriteFont>(".\\Fonts\\doctor_who");
+            ////fontToUse = Content.Load<SpriteFont>(".\\Fonts\\DrWho");
             //-------------------------------------------------------------
             // added to load Song
             //-------------------------------------------------------------
