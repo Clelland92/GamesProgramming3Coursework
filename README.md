@@ -2,30 +2,30 @@
 
 <h2>Marc Clelland - Matric Number: S1113808</h2>
 
-<h3>Environment Variables</h3>
+<h3>Coursework</h3>
 
 <P></P>
 
-<h3>Include and Linker settings</h3>
+<h3></h3>
 
-<p>In Visual Studio you should setup up the following project properties</p>
+<p>Using XNA 4.0 in Visual Studio to create a game with the following </p>
 
 <table border="1">
 <tr>
-  <td>C/C++ - Include Directories</td>
-  <td>This will need to be the path to the directory where Fmod is stored\inc</td>
+  <td>Cameras, minimum of two</td>
+  <td>One of these will be attached to the player character\inc</td>
 </tr>
 <tr>
-	<td>Linker - Additional Library Directories</td>
-	<td>This will need to be the path to the directory where Fmod is stored\lib</td>
+	<td></td>
+	<td>\lib</td>
 </tr>
 <tr>
-	<td>Linker - Input - Additional Dependencies</td>
-	<td>fmodL_vc.lib</td>
+	<td></td>
+	<td></td>
 <tr>
 </table>
  
-<p>You should also copy the following dll from the FMOD install directory, it should be located in the api folder, to the visual studio project directory</p>
-<b>fmodL.dll</b> 
+<p></p>
+<b></b> 
 
 
