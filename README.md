@@ -13,11 +13,11 @@
 <table border="1">
 <tr>
   <td>Cameras, minimum of two</td>
-  <td>One of these will be attached to the player character\inc</td>
+  <td>One of these will be attached to the player character</td>
 </tr>
 <tr>
 	<td></td>
-	<td>\lib</td>
+	<td></td>
 </tr>
 <tr>
 	<td></td>
