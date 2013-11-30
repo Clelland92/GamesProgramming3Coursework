@@ -37,7 +37,7 @@ namespace GP3Coursework
         SoundEffect tardisSound;
 
         // Set the 3D model to draw.
-        private Model mdlTardis;
+        private Model starShip;
 
         // The aspect ratio determines how to scale 3d to 2d projection.
         private float aspectRatio;
@@ -157,7 +157,7 @@ namespace GP3Coursework
             //-------------------------------------------------------------
             // added to load Model
             //-------------------------------------------------------------
-            mdlTardis = Content.Load<Model>(".\\Models\\tardis1314");
+            starShip = Content.Load<Model>(".\\Models\\fighter");
             aspectRatio = graphics.GraphicsDevice.Viewport.AspectRatio;
             //-------------------------------------------------------------
             // added to load SoundFX's
@@ -212,11 +212,11 @@ namespace GP3Coursework
 
             // TODO: Add your drawing code here
             // Copy any parent transforms.
-            Matrix[] transforms = new Matrix[mdlTardis.Bones.Count];
-            mdlTardis.CopyAbsoluteBoneTransformsTo(transforms);
+            Matrix[] transforms = new Matrix[starShip.Bones.Count];
+            starShip.CopyAbsoluteBoneTransformsTo(transforms);
 
             // Draw the model. A model can have multiple meshes, so loop.
-            foreach (ModelMesh mesh in mdlTardis.Meshes)
+            foreach (ModelMesh mesh in starShip.Meshes)
             {
                 // This is where the mesh orientation is set, as well as our camera and projection.
                 foreach (BasicEffect effect in mesh.Effects)

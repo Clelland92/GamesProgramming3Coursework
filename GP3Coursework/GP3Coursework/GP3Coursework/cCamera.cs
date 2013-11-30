@@ -53,75 +53,75 @@ namespace GP3Coursework
             /// <summary>
             /// User defined function to define the position and colour of each vertex
             /// </summary>
-            private void def_Cube()
-            {
-                Vector3 topLeftFront = new Vector3(-1.0f, 1.0f, 1.0f);
-                Vector3 bottomLeftFront = new Vector3(-1.0f, -1.0f, 1.0f);
-                Vector3 topRightFront = new Vector3(1.0f, 1.0f, 1.0f);
-                Vector3 bottomRightFront = new Vector3(1.0f, -1.0f, 1.0f);
-                Vector3 topLeftBack = new Vector3(-1.0f, 1.0f, -1.0f);
-                Vector3 topRightBack = new Vector3(1.0f, 1.0f, -1.0f);
-                Vector3 bottomLeftBack = new Vector3(-1.0f, -1.0f, -1.0f);
-                Vector3 bottomRightBack = new Vector3(1.0f, -1.0f, -1.0f);
+            //private void def_Cube()
+            //{
+            //    Vector3 topLeftFront = new Vector3(-1.0f, 1.0f, 1.0f);
+            //    Vector3 bottomLeftFront = new Vector3(-1.0f, -1.0f, 1.0f);
+            //    Vector3 topRightFront = new Vector3(1.0f, 1.0f, 1.0f);
+            //    Vector3 bottomRightFront = new Vector3(1.0f, -1.0f, 1.0f);
+            //    Vector3 topLeftBack = new Vector3(-1.0f, 1.0f, -1.0f);
+            //    Vector3 topRightBack = new Vector3(1.0f, 1.0f, -1.0f);
+            //    Vector3 bottomLeftBack = new Vector3(-1.0f, -1.0f, -1.0f);
+            //    Vector3 bottomRightBack = new Vector3(1.0f, -1.0f, -1.0f);
 
-                mVtCube[0] = new VertexPositionTexture(topLeftFront, new Vector2(0.5f, 0.66f));
-                mVtCube[1] = new VertexPositionTexture(bottomLeftFront, new Vector2(0.5f, 1.0f));
-                mVtCube[2] = new VertexPositionTexture(topRightFront, new Vector2(1.0f, 0.66f));
-                mVtCube[3] = new VertexPositionTexture(bottomRightFront, new Vector2(1.0f, 1.0f));
+            //    mVtCube[0] = new VertexPositionTexture(topLeftFront, new Vector2(0.5f, 0.66f));
+            //    mVtCube[1] = new VertexPositionTexture(bottomLeftFront, new Vector2(0.5f, 1.0f));
+            //    mVtCube[2] = new VertexPositionTexture(topRightFront, new Vector2(1.0f, 0.66f));
+            //    mVtCube[3] = new VertexPositionTexture(bottomRightFront, new Vector2(1.0f, 1.0f));
 
-                mVtCube[4] = new VertexPositionTexture(topLeftBack, new Vector2(0.5f, 0.0f));
-                mVtCube[5] = new VertexPositionTexture(topRightBack, new Vector2(0.0f, 0.0f));
-                mVtCube[6] = new VertexPositionTexture(bottomLeftBack, new Vector2(0.5f, 0.33f));
-                mVtCube[7] = new VertexPositionTexture(bottomRightBack, new Vector2(0.0f, 0.33f));
+            //    mVtCube[4] = new VertexPositionTexture(topLeftBack, new Vector2(0.5f, 0.0f));
+            //    mVtCube[5] = new VertexPositionTexture(topRightBack, new Vector2(0.0f, 0.0f));
+            //    mVtCube[6] = new VertexPositionTexture(bottomLeftBack, new Vector2(0.5f, 0.33f));
+            //    mVtCube[7] = new VertexPositionTexture(bottomRightBack, new Vector2(0.0f, 0.33f));
 
-                mVtCube[8] = new VertexPositionTexture(topLeftFront, new Vector2(0.0f, 0.66f));
-                mVtCube[9] = new VertexPositionTexture(topRightBack, new Vector2(0.5f, 0.33f));
-                mVtCube[10] = new VertexPositionTexture(topLeftBack, new Vector2(0.0f, 0.33f));
-                mVtCube[11] = new VertexPositionTexture(topRightFront, new Vector2(0.5f, 0.66f));
+            //    mVtCube[8] = new VertexPositionTexture(topLeftFront, new Vector2(0.0f, 0.66f));
+            //    mVtCube[9] = new VertexPositionTexture(topRightBack, new Vector2(0.5f, 0.33f));
+            //    mVtCube[10] = new VertexPositionTexture(topLeftBack, new Vector2(0.0f, 0.33f));
+            //    mVtCube[11] = new VertexPositionTexture(topRightFront, new Vector2(0.5f, 0.66f));
 
-                mVtCube[12] = new VertexPositionTexture(bottomLeftFront, new Vector2(0.5f, 0.33f));
-                mVtCube[13] = new VertexPositionTexture(bottomLeftBack, new Vector2(0.5f, 0.66f));
-                mVtCube[14] = new VertexPositionTexture(bottomRightBack, new Vector2(1.0f, 0.66f));
-                mVtCube[15] = new VertexPositionTexture(bottomRightFront, new Vector2(1.0f, 0.33f));
+            //    mVtCube[12] = new VertexPositionTexture(bottomLeftFront, new Vector2(0.5f, 0.33f));
+            //    mVtCube[13] = new VertexPositionTexture(bottomLeftBack, new Vector2(0.5f, 0.66f));
+            //    mVtCube[14] = new VertexPositionTexture(bottomRightBack, new Vector2(1.0f, 0.66f));
+            //    mVtCube[15] = new VertexPositionTexture(bottomRightFront, new Vector2(1.0f, 0.33f));
 
-                mVtCube[16] = new VertexPositionTexture(topLeftFront, new Vector2(0.0f, 0.66f));
-                mVtCube[17] = new VertexPositionTexture(bottomLeftBack, new Vector2(0.5f, 1.0f));
-                mVtCube[18] = new VertexPositionTexture(bottomLeftFront, new Vector2(0.5f, 0.66f));
-                mVtCube[19] = new VertexPositionTexture(topLeftBack, new Vector2(0.0f, 1.0f));
+            //    mVtCube[16] = new VertexPositionTexture(topLeftFront, new Vector2(0.0f, 0.66f));
+            //    mVtCube[17] = new VertexPositionTexture(bottomLeftBack, new Vector2(0.5f, 1.0f));
+            //    mVtCube[18] = new VertexPositionTexture(bottomLeftFront, new Vector2(0.5f, 0.66f));
+            //    mVtCube[19] = new VertexPositionTexture(topLeftBack, new Vector2(0.0f, 1.0f));
 
-                mVtCube[20] = new VertexPositionTexture(topRightFront, new Vector2(0.5f, 0.0f));
-                mVtCube[21] = new VertexPositionTexture(bottomRightFront, new Vector2(0.5f, 0.33f));
-                mVtCube[22] = new VertexPositionTexture(bottomRightBack, new Vector2(1.0f, 0.33f));
-                mVtCube[23] = new VertexPositionTexture(topRightBack, new Vector2(1.0f, 0.0f));
+            //    mVtCube[20] = new VertexPositionTexture(topRightFront, new Vector2(0.5f, 0.0f));
+            //    mVtCube[21] = new VertexPositionTexture(bottomRightFront, new Vector2(0.5f, 0.33f));
+            //    mVtCube[22] = new VertexPositionTexture(bottomRightBack, new Vector2(1.0f, 0.33f));
+            //    mVtCube[23] = new VertexPositionTexture(topRightBack, new Vector2(1.0f, 0.0f));
 
-                cubeIndices = new short[] {  0,  1,  2,  // red front face
-                                     1,  3,  2,
-                                     4,  5,  6,  // orange back face
-                                     6,  5,  7,
-                                     8,  9, 10,  // yellow top face
-                                     8, 11,  9,
-                                    12, 13, 14,  // purple bottom face
-                                    12, 14, 15,
-                                    16, 17, 18,  // blue left face
-                                    19, 17, 16,
-                                    20, 21, 22,  // green right face
-                                    23, 20, 22  };
+            //    cubeIndices = new short[] {  0,  1,  2,  // red front face
+            //                         1,  3,  2,
+            //                         4,  5,  6,  // orange back face
+            //                         6,  5,  7,
+            //                         8,  9, 10,  // yellow top face
+            //                         8, 11,  9,
+            //                        12, 13, 14,  // purple bottom face
+            //                        12, 14, 15,
+            //                        16, 17, 18,  // blue left face
+            //                        19, 17, 16,
+            //                        20, 21, 22,  // green right face
+            //                        23, 20, 22  };
 
-                vertexBuffer = new VertexBuffer(graphics.GraphicsDevice,
-                                                typeof(VertexPositionTexture),
-                                                mVtCube.Length,
-                                                BufferUsage.None);
+            //    vertexBuffer = new VertexBuffer(graphics.GraphicsDevice,
+            //                                    typeof(VertexPositionTexture),
+            //                                    mVtCube.Length,
+            //                                    BufferUsage.None);
 
-                vertexBuffer.SetData<VertexPositionTexture>(mVtCube);
+            //    vertexBuffer.SetData<VertexPositionTexture>(mVtCube);
 
-                indexBuffer = new IndexBuffer(graphics.GraphicsDevice,
-                    typeof(short),
-                    cubeIndices.Length,
-                    BufferUsage.None);
+            //    indexBuffer = new IndexBuffer(graphics.GraphicsDevice,
+            //        typeof(short),
+            //        cubeIndices.Length,
+            //        BufferUsage.None);
 
-                indexBuffer.SetData<short>(cubeIndices);
+            //    indexBuffer.SetData<short>(cubeIndices);
 
-            }
+            //}
 
             private void InitializeTransform()
             {
