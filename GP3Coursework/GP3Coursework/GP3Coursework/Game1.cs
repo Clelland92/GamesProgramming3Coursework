@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-namespace GP3Coursework
+namespace Lab6CollisionDetectionV4
 {
     /// <summary>
     /// This is the main type for your game
@@ -23,21 +23,23 @@ namespace GP3Coursework
         //------------------------------------------
         // Added for use with fonts
         //------------------------------------------
-        ////SpriteFont fontToUse;
-
+        SpriteFont fontToUse;
         //--------------------------------------------------
         // Added for use with playing Audio via Media player
         //--------------------------------------------------
-        Song bkgMusic;
-        String songInfo;
+        private Song bkgMusic;
+        private String songInfo;
         //--------------------------------------------------
         //Set the sound effects to use
         //--------------------------------------------------
-        SoundEffectInstance tardisSoundInstance;
-        SoundEffect tardisSound;
+        private SoundEffectInstance tardisSoundInstance;
+        private SoundEffect tardisSound;
+        private SoundEffect explosionSound;
+        private SoundEffect firingSound;
 
         // Set the 3D model to draw.
-        private Model starShip;
+        private Model mdlTardis;
+        private Matrix[] mdlTardisTransforms;
 
         // The aspect ratio determines how to scale 3d to 2d projection.
         private float aspectRatio;
@@ -47,8 +49,36 @@ namespace GP3Coursework
         private float mdlRotation = 0.0f;
         private Vector3 mdlVelocity = Vector3.Zero;
 
+        // create an array of enemy daleks
+        private Model mdlDalek;
+        private Matrix[] mdDalekTransforms;
+        private Daleks[] dalekList = new Daleks[GameConstants.NumDaleks];
+
+        // create an array of laser bullets
+        private Model mdlLaser;
+        private Matrix[] mdlLaserTransforms;
+        private Laser[] laserList = new Laser[GameConstants.NumLasers];
+
+        private Random random = new Random();
+
+        private KeyboardState lastState;
+        private int hitCount;
+
         // Set the position of the camera in world space, for our view matrix.
-        private Vector3 cameraPosition = new Vector3(0.0f, 5.0f, 15.0f);
+        private Vector3 cameraPosition = new Vector3(0.0f, 3.0f, 300.0f);
+        private Matrix viewMatrix;
+        private Matrix projectionMatrix;
+
+        private void InitializeTransform()
+        {
+            aspectRatio = graphics.GraphicsDevice.Viewport.AspectRatio;
+
+            viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
+
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
+                MathHelper.ToRadians(45), aspectRatio, 1.0f, 350.0f);
+
+        }
 
         private void MoveModel()
         {
@@ -97,6 +127,86 @@ namespace GP3Coursework
                 mdlRotation = 0.0f;
                 tardisSoundInstance.Play();
             }
+
+            //are we shooting?
+            if (keyboardState.IsKeyDown(Keys.Space) || lastState.IsKeyDown(Keys.Space))
+            {
+                //add another bullet.  Find an inactive bullet slot and use it
+                //if all bullets slots are used, ignore the user input
+                for (int i = 0; i < GameConstants.NumLasers; i++)
+                {
+                    if (!laserList[i].isActive)
+                    {
+                        Matrix tardisTransform = Matrix.CreateRotationY(mdlRotation);
+                        laserList[i].direction = tardisTransform.Forward;
+                        laserList[i].speed = GameConstants.LaserSpeedAdjustment;
+                        laserList[i].position = mdlPosition + laserList[i].direction;
+                        laserList[i].isActive = true;
+                        firingSound.Play();
+                        break; //exit the loop     
+                    }
+                }
+            }
+            lastState = keyboardState;
+
+        }
+
+        private void ResetDaleks()
+        {
+            float xStart;
+            float zStart;
+            for (int i = 0; i < GameConstants.NumDaleks; i++)
+            {
+                if (random.Next(2) == 0)
+                {
+                    xStart = (float)-GameConstants.PlayfieldSizeX;
+                }
+                else
+                {
+                    xStart = (float)GameConstants.PlayfieldSizeX;
+                }
+                zStart = (float)random.NextDouble() * GameConstants.PlayfieldSizeZ;
+                dalekList[i].position = new Vector3(xStart, 0.0f, zStart);
+                double angle = random.NextDouble() * 2 * Math.PI;
+                dalekList[i].direction.X = -(float)Math.Sin(angle);
+                dalekList[i].direction.Z = (float)Math.Cos(angle);
+                dalekList[i].speed = GameConstants.DalekMinSpeed +
+                   (float)random.NextDouble() * GameConstants.DalekMaxSpeed;
+                dalekList[i].isActive = true;
+            }
+
+        }
+
+        private Matrix[] SetupEffectTransformDefaults(Model myModel)
+        {
+            Matrix[] absoluteTransforms = new Matrix[myModel.Bones.Count];
+            myModel.CopyAbsoluteBoneTransformsTo(absoluteTransforms);
+
+            foreach (ModelMesh mesh in myModel.Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();
+                    effect.Projection = projectionMatrix;
+                    effect.View = viewMatrix;
+                }
+            }
+            return absoluteTransforms;
+        }
+
+        public void DrawModel(Model model, Matrix modelTransform, Matrix[] absoluteBoneTransforms)
+        {
+            //Draw the model, a model can have multiple meshes, so loop
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                //This is where the mesh orientation is set
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.World = absoluteBoneTransforms[mesh.ParentBone.Index] * modelTransform;
+                }
+                //Draw the mesh, will use the effects set above.
+                mesh.Draw();
+            }
         }
 
         private void writeText(string msg, Vector2 msgPos, Color msgColour)
@@ -104,10 +214,10 @@ namespace GP3Coursework
             spriteBatch.Begin();
             string output = msg;
             // Find the center of the string
-            ////Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
-            ////Vector2 FontPos = msgPos;
+            Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
+            Vector2 FontPos = msgPos;
             // Draw the string
-            ////spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
+            spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
             spriteBatch.End();
         }
 
@@ -130,7 +240,10 @@ namespace GP3Coursework
         {
             // TODO: Add your initialization logic here
             this.IsMouseVisible = true;
-            Window.Title = "GP3 Coursework!!";
+            Window.Title = "Lab 6 - Collision Detection";
+            hitCount = 0;
+            InitializeTransform();
+            ResetDaleks();
 
             base.Initialize();
         }
@@ -143,10 +256,11 @@ namespace GP3Coursework
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            //-------------------------------------------------------------
+            aspectRatio = graphics.GraphicsDevice.Viewport.AspectRatio;
+            //------------------------------------------------------------- 
             // added to load font
             //-------------------------------------------------------------
-            ////fontToUse = Content.Load<SpriteFont>(".\\Fonts\\DrWho");
+            fontToUse = Content.Load<SpriteFont>(".\\Fonts\\DrWho");
             //-------------------------------------------------------------
             // added to load Song
             //-------------------------------------------------------------
@@ -157,16 +271,23 @@ namespace GP3Coursework
             //-------------------------------------------------------------
             // added to load Model
             //-------------------------------------------------------------
-            starShip = Content.Load<Model>(".\\Models\\fighter");
-            aspectRatio = graphics.GraphicsDevice.Viewport.AspectRatio;
+            mdlTardis = Content.Load<Model>(".\\Models\\tardis");
+            mdlTardisTransforms = SetupEffectTransformDefaults(mdlTardis);
+            mdlDalek = Content.Load<Model>(".\\Models\\dalek");
+            mdDalekTransforms = SetupEffectTransformDefaults(mdlDalek);
+            mdlLaser = Content.Load<Model>(".\\Models\\laser");
+            mdlLaserTransforms = SetupEffectTransformDefaults(mdlLaser);
             //-------------------------------------------------------------
             // added to load SoundFX's
             //-------------------------------------------------------------
             tardisSound = Content.Load<SoundEffect>("Audio\\tardisEdit");
+            explosionSound = Content.Load<SoundEffect>("Audio\\explosion2");
+            firingSound = Content.Load<SoundEffect>("Audio\\shot007");
             tardisSoundInstance = tardisSound.CreateInstance();
             tardisSoundInstance.Play();
 
-            // TODO: use this.Content to load your game content here
+
+             // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -190,7 +311,6 @@ namespace GP3Coursework
                 this.Exit();
 
             // TODO: Add your update logic here
-            //modelRotation += (float)gameTime.ElapsedGameTime.TotalMilliseconds * MathHelper.ToRadians(0.1f);
             MoveModel();
 
             // Add velocity to the current position.
@@ -199,6 +319,62 @@ namespace GP3Coursework
             // Bleed off velocity over time.
             mdlVelocity *= 0.95f;
 
+            float timeDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            for (int i = 0; i < GameConstants.NumDaleks; i++)
+            {
+                dalekList[i].Update(timeDelta);
+            }
+
+            for (int i = 0; i < GameConstants.NumLasers; i++)
+            {
+                if (laserList[i].isActive)
+                {
+                    laserList[i].Update(timeDelta);
+                }
+            }
+
+            BoundingSphere TardisSphere =
+              new BoundingSphere(mdlPosition,
+                       mdlTardis.Meshes[0].BoundingSphere.Radius *
+                             GameConstants.ShipBoundingSphereScale);
+
+            //Check for collisions
+            for (int i = 0; i < dalekList.Length; i++)
+            {
+                if (dalekList[i].isActive)
+                {
+                    BoundingSphere dalekSphereA =
+                      new BoundingSphere(dalekList[i].position, mdlDalek.Meshes[0].BoundingSphere.Radius *
+                                     GameConstants.DalekBoundingSphereScale);
+
+                    for (int k = 0; k < laserList.Length; k++)
+                    {
+                        if (laserList[k].isActive)
+                        {
+                            BoundingSphere laserSphere = new BoundingSphere(
+                              laserList[k].position, mdlLaser.Meshes[0].BoundingSphere.Radius *
+                                     GameConstants.LaserBoundingSphereScale);
+                            if (dalekSphereA.Intersects(laserSphere))
+                            {
+                                explosionSound.Play();
+                                dalekList[i].isActive = false;
+                                laserList[k].isActive = false;
+                                hitCount++;
+                                break; //no need to check other bullets
+                            }
+                        }
+                        if (dalekSphereA.Intersects(TardisSphere)) //Check collision between Dalek and Tardis
+                        {
+                            explosionSound.Play();
+                            dalekList[i].direction *= -1.0f;
+                            //laserList[k].isActive = false;
+                            break; //no need to check other bullets
+                        }
+
+                    }
+                }
+            }
             base.Update(gameTime);
         }
 
@@ -211,30 +387,31 @@ namespace GP3Coursework
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            // Copy any parent transforms.
-            Matrix[] transforms = new Matrix[starShip.Bones.Count];
-            starShip.CopyAbsoluteBoneTransformsTo(transforms);
-
-            // Draw the model. A model can have multiple meshes, so loop.
-            foreach (ModelMesh mesh in starShip.Meshes)
+            for (int i = 0; i < GameConstants.NumDaleks; i++)
             {
-                // This is where the mesh orientation is set, as well as our camera and projection.
-                foreach (BasicEffect effect in mesh.Effects)
+                if (dalekList[i].isActive)
                 {
-                    effect.World = transforms[mesh.ParentBone.Index] * Matrix.CreateRotationY(mdlRotation)
-                        * Matrix.CreateTranslation(mdlPosition);
-                    effect.View = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
-                    effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f),
-                        aspectRatio, 1.0f, 10000.0f);
-                    effect.EnableDefaultLighting();
+                    Matrix dalekTransform = Matrix.CreateScale(GameConstants.DalekScalar) * Matrix.CreateTranslation(dalekList[i].position);
+                    DrawModel(mdlDalek, dalekTransform, mdDalekTransforms);
                 }
-                // Draw the mesh, using the effects set above.
-                mesh.Draw();
             }
-            writeText("The Tardis", new Vector2(50, 10), Color.Yellow);
-            writeText("Instructions\nPress The Arrow keys to move the Model\nR to Reset", new Vector2(50, 50), Color.Black);
+            for (int i = 0; i < GameConstants.NumLasers; i++)
+            {
+                if (laserList[i].isActive)
+                {
+                    Matrix laserTransform = Matrix.CreateScale(GameConstants.LaserScalar) * Matrix.CreateTranslation(laserList[i].position);
+                    DrawModel(mdlLaser, laserTransform, mdlLaserTransforms);
+                }
+            }
 
-            writeText(songInfo, new Vector2(50, 100), Color.AntiqueWhite);
+            Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
+            DrawModel(mdlTardis, modelTransform, mdlTardisTransforms);
+
+            writeText("Tardis Vs Daleks", new Vector2(50, 10), Color.Yellow);
+            writeText("Instructions\nPress The Arrow keys to move the Tardis\nSpacebar to fire!\nR to Reset", new Vector2(50, 50), Color.Black);
+
+            writeText(songInfo, new Vector2(50, 125), Color.AntiqueWhite);
+
             base.Draw(gameTime);
         }
     }
