@@ -1,5 +1,5 @@
 using System;
-using Lab6CollisionDetectionV4;
+using GP3Coursework;
 
 namespace GP3Coursework
 {

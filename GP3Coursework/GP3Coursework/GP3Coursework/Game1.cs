@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-namespace Lab6CollisionDetectionV4
+namespace GP3Coursework
 {
     /// <summary>
     /// This is the main type for your game
@@ -23,7 +23,7 @@ namespace Lab6CollisionDetectionV4
         //------------------------------------------
         // Added for use with fonts
         //------------------------------------------
-        SpriteFont fontToUse;
+        ////SpriteFont fontToUse;
         //--------------------------------------------------
         // Added for use with playing Audio via Media player
         //--------------------------------------------------
@@ -38,8 +38,8 @@ namespace Lab6CollisionDetectionV4
         private SoundEffect firingSound;
 
         // Set the 3D model to draw.
-        private Model mdlTardis;
-        private Matrix[] mdlTardisTransforms;
+        private Model mdlStarShip;
+        private Matrix[] mdlStarShipTransforms;
 
         // The aspect ratio determines how to scale 3d to 2d projection.
         private float aspectRatio;
@@ -50,9 +50,9 @@ namespace Lab6CollisionDetectionV4
         private Vector3 mdlVelocity = Vector3.Zero;
 
         // create an array of enemy daleks
-        private Model mdlDalek;
-        private Matrix[] mdDalekTransforms;
-        private Daleks[] dalekList = new Daleks[GameConstants.NumDaleks];
+        private Model mdlAsteroid;
+        private Matrix[] mdlAsteroidTransforms;
+        private Asteroid[] AsteroidList = new Asteroid[GameConstants.NumAsteroids];
 
         // create an array of laser bullets
         private Model mdlLaser;
@@ -76,7 +76,7 @@ namespace Lab6CollisionDetectionV4
             viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
 
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.ToRadians(45), aspectRatio, 1.0f, 350.0f);
+                MathHelper.ToRadians(60), aspectRatio, 1.0f, 350.0f);
 
         }
 
@@ -151,11 +151,11 @@ namespace Lab6CollisionDetectionV4
 
         }
 
-        private void ResetDaleks()
+        private void ResetAsteroids()
         {
             float xStart;
             float zStart;
-            for (int i = 0; i < GameConstants.NumDaleks; i++)
+            for (int i = 0; i < GameConstants.NumAsteroids; i++)
             {
                 if (random.Next(2) == 0)
                 {
@@ -166,13 +166,13 @@ namespace Lab6CollisionDetectionV4
                     xStart = (float)GameConstants.PlayfieldSizeX;
                 }
                 zStart = (float)random.NextDouble() * GameConstants.PlayfieldSizeZ;
-                dalekList[i].position = new Vector3(xStart, 0.0f, zStart);
+                AsteroidList[i].position = new Vector3(xStart, 0.0f, zStart);
                 double angle = random.NextDouble() * 2 * Math.PI;
-                dalekList[i].direction.X = -(float)Math.Sin(angle);
-                dalekList[i].direction.Z = (float)Math.Cos(angle);
-                dalekList[i].speed = GameConstants.DalekMinSpeed +
-                   (float)random.NextDouble() * GameConstants.DalekMaxSpeed;
-                dalekList[i].isActive = true;
+                AsteroidList[i].direction.X = -(float)Math.Sin(angle);
+                AsteroidList[i].direction.Z = (float)Math.Cos(angle);
+                AsteroidList[i].speed = GameConstants.AsteroidMinSpeed +
+                   (float)random.NextDouble() * GameConstants.AsteroidMaxSpeed;
+                AsteroidList[i].isActive = true;
             }
 
         }
@@ -214,10 +214,10 @@ namespace Lab6CollisionDetectionV4
             spriteBatch.Begin();
             string output = msg;
             // Find the center of the string
-            Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
-            Vector2 FontPos = msgPos;
+            ////Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
+            ////Vector2 FontPos = msgPos;
             // Draw the string
-            spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
+            ////spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
             spriteBatch.End();
         }
 
@@ -240,10 +240,10 @@ namespace Lab6CollisionDetectionV4
         {
             // TODO: Add your initialization logic here
             this.IsMouseVisible = true;
-            Window.Title = "Lab 6 - Collision Detection";
+            Window.Title = "GP3 Coursework";
             hitCount = 0;
             InitializeTransform();
-            ResetDaleks();
+            ResetAsteroids();
 
             base.Initialize();
         }
@@ -260,7 +260,7 @@ namespace Lab6CollisionDetectionV4
             //------------------------------------------------------------- 
             // added to load font
             //-------------------------------------------------------------
-            fontToUse = Content.Load<SpriteFont>(".\\Fonts\\DrWho");
+            ////fontToUse = Content.Load<SpriteFont>(".\\Fonts\\DrWho");
             //-------------------------------------------------------------
             // added to load Song
             //-------------------------------------------------------------
@@ -271,11 +271,11 @@ namespace Lab6CollisionDetectionV4
             //-------------------------------------------------------------
             // added to load Model
             //-------------------------------------------------------------
-            mdlTardis = Content.Load<Model>(".\\Models\\tardis");
-            mdlTardisTransforms = SetupEffectTransformDefaults(mdlTardis);
-            mdlDalek = Content.Load<Model>(".\\Models\\dalek");
-            mdDalekTransforms = SetupEffectTransformDefaults(mdlDalek);
-            mdlLaser = Content.Load<Model>(".\\Models\\laser");
+            mdlStarShip = Content.Load<Model>(".\\Models\\PlayerModel\\fighter");
+            mdlStarShipTransforms = SetupEffectTransformDefaults(mdlStarShip);
+            mdlAsteroid = Content.Load<Model>(".\\Models\\Environment\\Asteroid\\asteroid");
+            mdlAsteroidTransforms = SetupEffectTransformDefaults(mdlAsteroid);
+            mdlLaser = Content.Load<Model>(".\\Models\\Laser\\laser");
             mdlLaserTransforms = SetupEffectTransformDefaults(mdlLaser);
             //-------------------------------------------------------------
             // added to load SoundFX's
@@ -283,7 +283,7 @@ namespace Lab6CollisionDetectionV4
             tardisSound = Content.Load<SoundEffect>("Audio\\tardisEdit");
             explosionSound = Content.Load<SoundEffect>("Audio\\explosion2");
             firingSound = Content.Load<SoundEffect>("Audio\\shot007");
-            tardisSoundInstance = tardisSound.CreateInstance();
+            tardisSoundInstance = tardisSound.CreateInstance(); 
             tardisSoundInstance.Play();
 
 
@@ -321,9 +321,9 @@ namespace Lab6CollisionDetectionV4
 
             float timeDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            for (int i = 0; i < GameConstants.NumDaleks; i++)
+            for (int i = 0; i < GameConstants.NumAsteroids; i++)
             {
-                dalekList[i].Update(timeDelta);
+                AsteroidList[i].Update(timeDelta);
             }
 
             for (int i = 0; i < GameConstants.NumLasers; i++)
@@ -334,19 +334,19 @@ namespace Lab6CollisionDetectionV4
                 }
             }
 
-            BoundingSphere TardisSphere =
+            BoundingSphere StarShipSphere =
               new BoundingSphere(mdlPosition,
-                       mdlTardis.Meshes[0].BoundingSphere.Radius *
+                       mdlStarShip.Meshes[0].BoundingSphere.Radius *
                              GameConstants.ShipBoundingSphereScale);
 
             //Check for collisions
-            for (int i = 0; i < dalekList.Length; i++)
+            for (int i = 0; i < AsteroidList.Length; i++)
             {
-                if (dalekList[i].isActive)
+                if (AsteroidList[i].isActive)
                 {
-                    BoundingSphere dalekSphereA =
-                      new BoundingSphere(dalekList[i].position, mdlDalek.Meshes[0].BoundingSphere.Radius *
-                                     GameConstants.DalekBoundingSphereScale);
+                    BoundingSphere AsteroidSphereA =
+                      new BoundingSphere(AsteroidList[i].position, mdlAsteroid.Meshes[0].BoundingSphere.Radius *
+                                     GameConstants.AsteroidBoundingSphereScale);
 
                     for (int k = 0; k < laserList.Length; k++)
                     {
@@ -355,19 +355,19 @@ namespace Lab6CollisionDetectionV4
                             BoundingSphere laserSphere = new BoundingSphere(
                               laserList[k].position, mdlLaser.Meshes[0].BoundingSphere.Radius *
                                      GameConstants.LaserBoundingSphereScale);
-                            if (dalekSphereA.Intersects(laserSphere))
+                            if (AsteroidSphereA.Intersects(laserSphere))
                             {
                                 explosionSound.Play();
-                                dalekList[i].isActive = false;
+                                AsteroidList[i].isActive = false;
                                 laserList[k].isActive = false;
                                 hitCount++;
                                 break; //no need to check other bullets
                             }
                         }
-                        if (dalekSphereA.Intersects(TardisSphere)) //Check collision between Dalek and Tardis
+                        if (AsteroidSphereA.Intersects(StarShipSphere)) //Check collision between Dalek and Tardis
                         {
                             explosionSound.Play();
-                            dalekList[i].direction *= -1.0f;
+                            AsteroidList[i].direction *= -1.0f;
                             //laserList[k].isActive = false;
                             break; //no need to check other bullets
                         }
@@ -387,12 +387,12 @@ namespace Lab6CollisionDetectionV4
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            for (int i = 0; i < GameConstants.NumDaleks; i++)
+            for (int i = 0; i < GameConstants.NumAsteroids; i++)
             {
-                if (dalekList[i].isActive)
+                if (AsteroidList[i].isActive)
                 {
-                    Matrix dalekTransform = Matrix.CreateScale(GameConstants.DalekScalar) * Matrix.CreateTranslation(dalekList[i].position);
-                    DrawModel(mdlDalek, dalekTransform, mdDalekTransforms);
+                    Matrix AsteroidTransform = Matrix.CreateScale(GameConstants.AsteroidScalar) * Matrix.CreateTranslation(AsteroidList[i].position);
+                    DrawModel(mdlAsteroid, AsteroidTransform, mdlAsteroidTransforms);
                 }
             }
             for (int i = 0; i < GameConstants.NumLasers; i++)
@@ -405,9 +405,9 @@ namespace Lab6CollisionDetectionV4
             }
 
             Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
-            DrawModel(mdlTardis, modelTransform, mdlTardisTransforms);
+            DrawModel(mdlStarShip, modelTransform, mdlStarShipTransforms);
 
-            writeText("Tardis Vs Daleks", new Vector2(50, 10), Color.Yellow);
+            writeText("SPACE EXPLORER", new Vector2(50, 10), Color.Yellow);
             writeText("Instructions\nPress The Arrow keys to move the Tardis\nSpacebar to fire!\nR to Reset", new Vector2(50, 50), Color.Black);
 
             writeText(songInfo, new Vector2(50, 125), Color.AntiqueWhite);

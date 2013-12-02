@@ -1,21 +1,22 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace Lab6CollisionDetectionV4
+namespace GP3Coursework
 {
-    struct Daleks
+    struct Planets
     {
         public Vector3 position;
-        public Vector3 direction;
+        public Vector3 direction; 
         public float speed;
         public bool isActive;
 
-        public void Update(float delta)
+        public void Update (float delta)
         {
             position += direction * speed *
-                        GameConstants.DalekSpeedAdjustment * delta;
+                        GameConstants.AsteroidSpeedAdjustment * delta;
             if (position.X > GameConstants.PlayfieldSizeX)
                 position.X -= 2 * GameConstants.PlayfieldSizeX;
             if (position.X < -GameConstants.PlayfieldSizeX)

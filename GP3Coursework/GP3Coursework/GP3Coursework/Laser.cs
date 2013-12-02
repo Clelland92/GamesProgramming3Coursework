@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace Lab6CollisionDetectionV4
+namespace GP3Coursework
 {
     struct Laser
     {
