@@ -70,6 +70,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Effects\" />
     <Folder Include="Models\Enemy\" />
   </ItemGroup>
   <ItemGroup>

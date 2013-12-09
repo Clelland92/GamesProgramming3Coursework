@@ -32,8 +32,8 @@ namespace GP3Coursework
         //--------------------------------------------------
         //Set the sound effects to use
         //--------------------------------------------------
-        private SoundEffectInstance tardisSoundInstance;
-        private SoundEffect tardisSound;
+        private SoundEffectInstance starShipSoundInstance;
+        private SoundEffect starShipSound;
         private SoundEffect explosionSound;
         private SoundEffect firingSound;
 
@@ -120,12 +120,12 @@ namespace GP3Coursework
                 mdlVelocity += mdlVelocityAdd;
             }
 
-            if (keyboardState.IsKeyDown(Keys.R))
+            if (keyboardState.IsKeyDown(Keys.R)) 
             {
                 mdlVelocity = Vector3.Zero;
                 mdlPosition = Vector3.Zero;
                 mdlRotation = 0.0f;
-                tardisSoundInstance.Play();
+                starShipSoundInstance.Play();
             }
 
             //are we shooting?
@@ -280,11 +280,11 @@ namespace GP3Coursework
             //-------------------------------------------------------------
             // added to load SoundFX's
             //-------------------------------------------------------------
-            tardisSound = Content.Load<SoundEffect>("Audio\\tardisEdit");
+            starShipSound = Content.Load<SoundEffect>("Audio\\tardisEdit");
             explosionSound = Content.Load<SoundEffect>("Audio\\explosion2");
             firingSound = Content.Load<SoundEffect>("Audio\\shot007");
-            tardisSoundInstance = tardisSound.CreateInstance(); 
-            tardisSoundInstance.Play();
+            starShipSoundInstance = starShipSound.CreateInstance(); 
+            starShipSoundInstance.Play();
 
 
              // TODO: use this.Content to load your game content here
