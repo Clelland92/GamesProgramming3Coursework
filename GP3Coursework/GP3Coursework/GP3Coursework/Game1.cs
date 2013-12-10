@@ -211,7 +211,7 @@ namespace GP3Coursework
 
         private void writeText(string msg, Vector2 msgPos, Color msgColour)
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin();  
             string output = msg;
             // Find the center of the string
             ////Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
@@ -219,6 +219,10 @@ namespace GP3Coursework
             // Draw the string
             ////spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
             spriteBatch.End();
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
 
         #endregion
