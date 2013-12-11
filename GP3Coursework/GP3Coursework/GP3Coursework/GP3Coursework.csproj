@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="cCamera.cs" />
     <Compile Include="Asteroid.cs" />
+    <Compile Include="cEnemy.cs" />
     <Compile Include="GameConstants.cs" />
     <Compile Include="Laser.cs" />
     <Compile Include="Planets.cs" />

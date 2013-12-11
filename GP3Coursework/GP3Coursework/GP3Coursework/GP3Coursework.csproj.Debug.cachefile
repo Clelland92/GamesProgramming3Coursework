@@ -10,9 +10,7 @@ Content\Audio\explosion2.xnb
 Content\Audio\shot007.xnb
 Content\Audio\who10Edit.xnb
 Content\Models\PlayerModel\psionic.xnb
-Content\Models\PlayerModel\fighter.xnb
 Content\Models\PlayerModel\psionic_0.xnb
-Content\Models\Laser\laser.xnb
 Content\Models\Laser\LaserMap.xnb
 Content\Models\Laser\LaserMap_0.xnb
 Content\Models\PlayerModel\mat_ship.xnb
@@ -21,10 +19,15 @@ Content\Models\PlayerModel\mat_ship_0.xnb
 Content\Models\Environment\Asteroid\mat_aste.xnb
 Content\Models\Environment\Planets\mat_planet_earth_1.xnb
 Content\Models\Environment\Planets\mat_plan.xnb
-Content\Models\Environment\Asteroid\asteroid.xnb
 Content\Models\Environment\Planets\planet_earth.xnb
 Content\Models\Environment\Asteroid\mat_aste_0.xnb
 Content\Models\Environment\Planets\mat_plan_0.xnb
+Content\Models\Laser\laser.xnb
+Content\Models\Environment\Asteroid\asteroid.xnb
+Content\Models\Enemy\mat_ship.xnb
+Content\Models\Enemy\mat_ship_0.xnb
+Content\Models\PlayerModel\fighter.xnb
+Content\Models\Enemy\spaceship01.xnb
 Content\Audio\DoctorWhotheme11.wma
 Content\Audio\Bluebell.wma
 Content\Audio\tardis.wma

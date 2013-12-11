@@ -59,10 +59,22 @@ namespace GP3Coursework
         private Matrix[] mdlLaserTransforms;
         private Laser[] laserList = new Laser[GameConstants.NumLasers];
 
+        // Create planet 
+        private Model mdlPlanet;
+        private Matrix[] mdlPlanetTrans;
+        private Planets[] planetearth = new Planets[GameConstants.NumPlanetEarth];
+
+        // Create enemy fighters  
+        private Model mdlEnemy;
+        private Matrix[] mdlEnemyTransforms;
+        private Enemy[] EnemyList = new Enemy[GameConstants.NumEnemy];
+
         private Random random = new Random();
 
         private KeyboardState lastState;
         private int hitCount;
+
+
 
         // Set the position of the camera in world space, for our view matrix.
         private Vector3 cameraPosition = new Vector3(0.0f, 3.0f, 300.0f);
@@ -137,8 +149,8 @@ namespace GP3Coursework
                 {
                     if (!laserList[i].isActive)
                     {
-                        Matrix tardisTransform = Matrix.CreateRotationY(mdlRotation);
-                        laserList[i].direction = tardisTransform.Forward;
+                        Matrix starshipTransform = Matrix.CreateRotationY(mdlRotation);
+                        laserList[i].direction = starshipTransform.Forward;
                         laserList[i].speed = GameConstants.LaserSpeedAdjustment;
                         laserList[i].position = mdlPosition + laserList[i].direction;
                         laserList[i].isActive = true;
@@ -174,6 +186,32 @@ namespace GP3Coursework
                    (float)random.NextDouble() * GameConstants.AsteroidMaxSpeed;
                 AsteroidList[i].isActive = true;
             }
+        }
+
+            private void ResetEnemy()
+            {
+            float xStart;
+            float zStart;
+            for (int i = 0; i < GameConstants.NumEnemy; i++)
+            {
+                if (random.Next(2) == 0)
+                {
+                    xStart = (float)-GameConstants.PlayfieldSizeX;
+                }
+                else
+                {
+                    xStart = (float)GameConstants.PlayfieldSizeX;
+                }
+                zStart = (float)random.NextDouble() * GameConstants.PlayfieldSizeZ;
+                EnemyList[i].position = new Vector3(xStart, 0.0f, zStart);
+                double angle = random.NextDouble() * 2 * Math.PI;
+                EnemyList[i].direction.X = -(float)Math.Sin(angle);
+                EnemyList[i].direction.Z = (float)Math.Cos(angle);
+                EnemyList[i].speed = GameConstants.EnemyMinSpeed +
+                   (float)random.NextDouble() * GameConstants.EnemyMaxSpeed;
+                EnemyList[i].isActive = true;
+            }
+            
 
         }
 
@@ -196,6 +234,8 @@ namespace GP3Coursework
 
         public void DrawModel(Model model, Matrix modelTransform, Matrix[] absoluteBoneTransforms)
         {
+            
+        
             //Draw the model, a model can have multiple meshes, so loop
             foreach (ModelMesh mesh in model.Meshes)
             {
@@ -203,6 +243,7 @@ namespace GP3Coursework
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.World = absoluteBoneTransforms[mesh.ParentBone.Index] * modelTransform;
+                    effect.View = viewMatrix;
                 }
                 //Draw the mesh, will use the effects set above.
                 mesh.Draw();
@@ -248,6 +289,7 @@ namespace GP3Coursework
             hitCount = 0;
             InitializeTransform();
             ResetAsteroids();
+            ResetEnemy();
 
             base.Initialize();
         }
@@ -281,6 +323,9 @@ namespace GP3Coursework
             mdlAsteroidTransforms = SetupEffectTransformDefaults(mdlAsteroid);
             mdlLaser = Content.Load<Model>(".\\Models\\Laser\\laser");
             mdlLaserTransforms = SetupEffectTransformDefaults(mdlLaser);
+            mdlPlanet = Content.Load<Model>(".\\Models\\Environment\\Planets\\planet_earth");
+            mdlEnemy = Content.Load<Model>(".\\Models\\Enemy\\spaceship01");
+            mdlEnemyTransforms = SetupEffectTransformDefaults(mdlEnemy);
             //-------------------------------------------------------------
             // added to load SoundFX's
             //-------------------------------------------------------------
@@ -314,6 +359,10 @@ namespace GP3Coursework
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+
+            Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
+            updateCamera(modelTransform);
+
             // TODO: Add your update logic here
             MoveModel();
 
@@ -338,6 +387,14 @@ namespace GP3Coursework
                 }
             }
 
+            for (int i = 0; i < GameConstants.NumEnemy; i++)
+            {
+                if (EnemyList[i].isActive)
+                {
+                    EnemyList[i].Update(timeDelta);
+                }
+            }
+
             BoundingSphere StarShipSphere =
               new BoundingSphere(mdlPosition,
                        mdlStarShip.Meshes[0].BoundingSphere.Radius *
@@ -346,7 +403,7 @@ namespace GP3Coursework
             //Check for collisions
             for (int i = 0; i < AsteroidList.Length; i++)
             {
-                if (AsteroidList[i].isActive)
+                if (AsteroidList[i].isActive)  
                 {
                     BoundingSphere AsteroidSphereA =
                       new BoundingSphere(AsteroidList[i].position, mdlAsteroid.Meshes[0].BoundingSphere.Radius *
@@ -368,7 +425,7 @@ namespace GP3Coursework
                                 break; //no need to check other bullets
                             }
                         }
-                        if (AsteroidSphereA.Intersects(StarShipSphere)) //Check collision between Dalek and Tardis
+                        if (AsteroidSphereA.Intersects(StarShipSphere)) //Check collision between asteroid and Starship 
                         {
                             explosionSound.Play();
                             AsteroidList[i].direction *= -1.0f;
@@ -377,9 +434,58 @@ namespace GP3Coursework
                         }
 
                     }
+
+                    //Check for collisions
+                    for (int j = 0; j < EnemyList.Length; j++)
+                    {
+                        if (EnemyList[j].isActive)
+                        {
+                            BoundingSphere EnemySphereA =
+                              new BoundingSphere(EnemyList[j].position, mdlEnemy.Meshes[0].BoundingSphere.Radius *
+                                             GameConstants.EnemyBoundingSphereScale);
+
+                            for (int k = 0; k < laserList.Length; k++)
+                            {
+                                if (laserList[k].isActive)
+                                {
+                                    BoundingSphere laserSphere = new BoundingSphere(
+                                      laserList[k].position, mdlLaser.Meshes[0].BoundingSphere.Radius *
+                                             GameConstants.EnemyBoundingSphereScale);
+                                    if (AsteroidSphereA.Intersects(laserSphere))
+                                    {
+                                        explosionSound.Play();
+                                        EnemyList[j].isActive = false;
+                                        laserList[k].isActive = false;
+                                        hitCount++;
+                                        break; //no need to check other bullets
+                                    }
+                                }
+                                if (EnemySphereA.Intersects(StarShipSphere)) //Check collision between asteroid and Starship 
+                                {
+                                    explosionSound.Play();
+                                    EnemyList[j].direction *= -1.0f;
+                                    //laserList[k].isActive = false;
+                                    break; //no need to check other bullets
+                                }
+
+                            }
+                        }
+                    }
+                    base.Update(gameTime);
                 }
             }
-            base.Update(gameTime);
+        }
+
+        public void updateCamera(Matrix objectToFollow)//send catWorldMatrix here
+        {
+            //  Vector3 targetOffset = new Vector3(0f, 0f, -20f);
+            float trailDistance = 10f;
+            float heightDistance = 10f;
+            float sideDistance = 30f;
+            float targetOffset = 10f;
+            Vector3 camPos = objectToFollow.Translation + (objectToFollow.Backward * trailDistance) + (objectToFollow.Up * heightDistance) + (objectToFollow.Right * sideDistance);
+            Vector3 camTarget = objectToFollow.Translation;
+            viewMatrix = Matrix.CreateLookAt(camPos, camTarget, Vector3.Up);
         }
 
         /// <summary>
@@ -405,6 +511,15 @@ namespace GP3Coursework
                 {
                     Matrix laserTransform = Matrix.CreateScale(GameConstants.LaserScalar) * Matrix.CreateTranslation(laserList[i].position);
                     DrawModel(mdlLaser, laserTransform, mdlLaserTransforms);
+                }
+            }
+
+            for (int i = 0; i < GameConstants.NumEnemy; i++)
+            {
+                if (EnemyList[i].isActive)
+                {
+                    Matrix enemyTransform = Matrix.CreateScale(GameConstants.LaserScalar) * Matrix.CreateTranslation(EnemyList[i].position);
+                    DrawModel(mdlEnemy, enemyTransform, mdlEnemyTransforms);
                 }
             }
 

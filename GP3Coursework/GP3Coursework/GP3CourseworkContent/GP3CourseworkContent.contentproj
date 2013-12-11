@@ -60,6 +60,7 @@
       <Name>fighter</Name>
       <Importer>XImporter</Importer>
       <Processor>ModelProcessor</Processor>
+      <ProcessorParameters_RotationY>-20</ProcessorParameters_RotationY>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -71,7 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Effects\" />
-    <Folder Include="Models\Enemy\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\Bluebell.mp3">
@@ -141,6 +141,7 @@
       <Name>asteroid</Name>
       <Importer>XImporter</Importer>
       <Processor>ModelProcessor</Processor>
+      <ProcessorParameters_Scale>2</ProcessorParameters_Scale>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
       <Name>laser</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
+      <ProcessorParameters_Scale>3</ProcessorParameters_Scale>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +189,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\PlayerModel\mat_ship.bmp">
+      <Name>mat_ship</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Enemy\spaceship01.x">
+      <Name>spaceship01</Name>
+      <Importer>XImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+      <ProcessorParameters_Scale>0.01</ProcessorParameters_Scale>
+      <ProcessorParameters_RotationX>90</ProcessorParameters_RotationX>
+      <ProcessorParameters_RotationZ>180</ProcessorParameters_RotationZ>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Enemy\mat_ship.bmp">
       <Name>mat_ship</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
