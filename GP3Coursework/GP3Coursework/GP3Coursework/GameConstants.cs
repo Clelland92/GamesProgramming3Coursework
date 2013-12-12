@@ -24,6 +24,7 @@ namespace GP3Coursework
         public const float EnemyScalar = 0.01f;
         //Planet constants
         public const int NumPlanetEarth = 1;
+
         public const int NumPlanetIce = 1; 
         //collision constants
         public const float AsteroidBoundingSphereScale = 0.025f;  //50% size

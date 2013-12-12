@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;  
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.GamerServices;
@@ -59,12 +59,12 @@ namespace GP3Coursework
         private Matrix[] mdlLaserTransforms;
         private Laser[] laserList = new Laser[GameConstants.NumLasers];
 
-        // Create planet 
+        // Create array of planets
         private Model mdlPlanet;
         private Matrix[] mdlPlanetTrans;
         private Planets[] planetearth = new Planets[GameConstants.NumPlanetEarth];
 
-        // Create enemy fighters  
+        // Create an array enemy fighters  
         private Model mdlEnemy;
         private Matrix[] mdlEnemyTransforms;
         private Enemy[] EnemyList = new Enemy[GameConstants.NumEnemy];
@@ -132,6 +132,7 @@ namespace GP3Coursework
                 mdlVelocity += mdlVelocityAdd;
             }
 
+            // Resets the game to initial setup when the R key is pressed
             if (keyboardState.IsKeyDown(Keys.R)) 
             {
                 mdlVelocity = Vector3.Zero;
@@ -140,7 +141,7 @@ namespace GP3Coursework
                 starShipSoundInstance.Play();
             }
 
-            //are we shooting?
+            // Check to see if the player is shooting
             if (keyboardState.IsKeyDown(Keys.Space) || lastState.IsKeyDown(Keys.Space))
             {
                 //add another bullet.  Find an inactive bullet slot and use it
@@ -234,8 +235,6 @@ namespace GP3Coursework
 
         public void DrawModel(Model model, Matrix modelTransform, Matrix[] absoluteBoneTransforms)
         {
-            
-        
             //Draw the model, a model can have multiple meshes, so loop
             foreach (ModelMesh mesh in model.Meshes)
             {
@@ -260,6 +259,7 @@ namespace GP3Coursework
             // Draw the string
             ////spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
             spriteBatch.End();
+            // This code gives the models solidity so they don't look transparent 
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
@@ -400,7 +400,7 @@ namespace GP3Coursework
                        mdlStarShip.Meshes[0].BoundingSphere.Radius *
                              GameConstants.ShipBoundingSphereScale);
 
-            //Check for collisions
+            //Check for collisions  
             for (int i = 0; i < AsteroidList.Length; i++)
             {
                 if (AsteroidList[i].isActive)  
@@ -435,7 +435,7 @@ namespace GP3Coursework
 
                     }
 
-                    //Check for collisions
+                    //Check for collisions  
                     for (int j = 0; j < EnemyList.Length; j++)
                     {
                         if (EnemyList[j].isActive)
@@ -460,7 +460,7 @@ namespace GP3Coursework
                                         break; //no need to check other bullets
                                     }
                                 }
-                                if (EnemySphereA.Intersects(StarShipSphere)) //Check collision between asteroid and Starship 
+                                if (EnemySphereA.Intersects(StarShipSphere)) //Check collision between enemy and Starship 
                                 {
                                     explosionSound.Play();
                                     EnemyList[j].direction *= -1.0f;
@@ -476,6 +476,7 @@ namespace GP3Coursework
             }
         }
 
+        // Code that allows the camera to be in a third person viewpoint
         public void updateCamera(Matrix objectToFollow)//send catWorldMatrix here
         {
             //  Vector3 targetOffset = new Vector3(0f, 0f, -20f);
@@ -496,7 +497,7 @@ namespace GP3Coursework
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            // Draws the asteroids according the number of asteroids in the list given
             for (int i = 0; i < GameConstants.NumAsteroids; i++)
             {
                 if (AsteroidList[i].isActive)
@@ -505,6 +506,7 @@ namespace GP3Coursework
                     DrawModel(mdlAsteroid, AsteroidTransform, mdlAsteroidTransforms);
                 }
             }
+            // Draws the number of lasers according the button press 
             for (int i = 0; i < GameConstants.NumLasers; i++)
             {
                 if (laserList[i].isActive)
@@ -513,7 +515,7 @@ namespace GP3Coursework
                     DrawModel(mdlLaser, laserTransform, mdlLaserTransforms);
                 }
             }
-
+            // Draws the number of enemies according to the number given in the enemy list  
             for (int i = 0; i < GameConstants.NumEnemy; i++)
             {
                 if (EnemyList[i].isActive)
