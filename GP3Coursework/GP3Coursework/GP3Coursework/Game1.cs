@@ -141,6 +141,18 @@ namespace GP3Coursework
                 starShipSoundInstance.Play();
             }
 
+            // Mutes the background Music
+            if (keyboardState.IsKeyDown(Keys.M))
+            {
+                MediaPlayer.IsMuted = true;
+            }
+
+            // Mutes all other sounds 
+            if (keyboardState.IsKeyDown(Keys.M))
+            {
+                SoundEffect.MasterVolume = 0;
+            }
+
             // Check to see if the player is shooting
             if (keyboardState.IsKeyDown(Keys.Space) || lastState.IsKeyDown(Keys.Space))
             {
@@ -161,7 +173,6 @@ namespace GP3Coursework
                 }
             }
             lastState = keyboardState;
-
         }
 
         private void ResetAsteroids()
@@ -212,8 +223,6 @@ namespace GP3Coursework
                    (float)random.NextDouble() * GameConstants.EnemyMaxSpeed;
                 EnemyList[i].isActive = true;
             }
-            
-
         }
 
         private Matrix[] SetupEffectTransformDefaults(Model myModel)
@@ -334,8 +343,6 @@ namespace GP3Coursework
             firingSound = Content.Load<SoundEffect>("Audio\\shot007");
             starShipSoundInstance = starShipSound.CreateInstance(); 
             starShipSoundInstance.Play();
-
-
              // TODO: use this.Content to load your game content here
         }
 
@@ -358,7 +365,6 @@ namespace GP3Coursework
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
 
             Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
             updateCamera(modelTransform);
