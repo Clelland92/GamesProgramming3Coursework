@@ -59,11 +59,11 @@ namespace GP3Coursework
         private Matrix[] mdlLaserTransforms;
         private Laser[] laserList = new Laser[GameConstants.NumLasers];
 
-        // Create array of planets
-        private Model mdlPlanet;
-        private Matrix[] mdlPlanetTrans;
-        private Planets[] planetearth = new Planets[GameConstants.NumPlanetEarth];
-
+        // Create planets
+        private Model mdlPlanetEarth;
+        private Matrix[] mdlPlanetEarthTransforms;
+        private Vector3 mdlEarthPos = new Vector3(200, 10, 0);
+        
         // Create an array enemy fighters  
         private Model mdlEnemy;
         private Matrix[] mdlEnemyTransforms;
@@ -72,9 +72,7 @@ namespace GP3Coursework
         private Random random = new Random();
 
         private KeyboardState lastState;
-        private int hitCount;
-
-
+        private int hitCount = 10;
 
         // Set the position of the camera in world space, for our view matrix.
         private Vector3 cameraPosition = new Vector3(0.0f, 3.0f, 300.0f);
@@ -261,12 +259,12 @@ namespace GP3Coursework
         private void writeText(string msg, Vector2 msgPos, Color msgColour)
         {
             spriteBatch.Begin();  
-            string output = msg;
+            //string output = msg;
             // Find the center of the string
             ////Vector2 FontOrigin = fontToUse.MeasureString(output) / 2;
             ////Vector2 FontPos = msgPos;
             // Draw the string
-            ////spriteBatch.DrawString(fontToUse, output, FontPos, msgColour);
+            //spriteBatch.DrawString(fontToUse, "hello", new Vector2(100, 100), Color.Yellow);
             spriteBatch.End();
             // This code gives the models solidity so they don't look transparent 
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -317,7 +315,7 @@ namespace GP3Coursework
             //-------------------------------------------------------------
             ////fontToUse = Content.Load<SpriteFont>(".\\Fonts\\DrWho");
             //-------------------------------------------------------------
-            // added to load Song
+            // added to load Song   
             //-------------------------------------------------------------
             bkgMusic = Content.Load<Song>(".\\Audio\\DoctorWhotheme11");
             MediaPlayer.Play(bkgMusic);
@@ -332,7 +330,8 @@ namespace GP3Coursework
             mdlAsteroidTransforms = SetupEffectTransformDefaults(mdlAsteroid);
             mdlLaser = Content.Load<Model>(".\\Models\\Laser\\laser");
             mdlLaserTransforms = SetupEffectTransformDefaults(mdlLaser);
-            mdlPlanet = Content.Load<Model>(".\\Models\\Environment\\Planets\\planet_earth");
+            mdlPlanetEarth = Content.Load<Model>(".\\Models\\Environment\\Planets\\planet_earth");
+            mdlPlanetEarthTransforms = SetupEffectTransformDefaults(mdlPlanetEarth);
             mdlEnemy = Content.Load<Model>(".\\Models\\Enemy\\spaceship01");
             mdlEnemyTransforms = SetupEffectTransformDefaults(mdlEnemy);
             //-------------------------------------------------------------
@@ -380,11 +379,13 @@ namespace GP3Coursework
 
             float timeDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            // Gets position of each asteroid in the game 
             for (int i = 0; i < GameConstants.NumAsteroids; i++)
             {
                 AsteroidList[i].Update(timeDelta);
             }
 
+            // Gets the position of each laser in game 
             for (int i = 0; i < GameConstants.NumLasers; i++)
             {
                 if (laserList[i].isActive)
@@ -393,6 +394,7 @@ namespace GP3Coursework
                 }
             }
 
+            // Gets the position of each enemy in the game
             for (int i = 0; i < GameConstants.NumEnemy; i++)
             {
                 if (EnemyList[i].isActive)
@@ -400,6 +402,7 @@ namespace GP3Coursework
                     EnemyList[i].Update(timeDelta);
                 }
             }
+
 
             BoundingSphere StarShipSphere =
               new BoundingSphere(mdlPosition,
@@ -457,7 +460,7 @@ namespace GP3Coursework
                                     BoundingSphere laserSphere = new BoundingSphere(
                                       laserList[k].position, mdlLaser.Meshes[0].BoundingSphere.Radius *
                                              GameConstants.EnemyBoundingSphereScale);
-                                    if (AsteroidSphereA.Intersects(laserSphere))
+                                    if (EnemySphereA.Intersects(laserSphere))
                                     {
                                         explosionSound.Play();
                                         EnemyList[j].isActive = false;
@@ -530,6 +533,10 @@ namespace GP3Coursework
                     DrawModel(mdlEnemy, enemyTransform, mdlEnemyTransforms);
                 }
             }
+
+            Matrix earthTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlEarthPos);
+            DrawModel(mdlPlanetEarth, earthTransform, mdlPlanetEarthTransforms);
+
 
             Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
             DrawModel(mdlStarShip, modelTransform, mdlStarShipTransforms);

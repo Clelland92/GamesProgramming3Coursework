@@ -181,20 +181,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\PlayerModel\spaceship01.x">
-      <Name>spaceship01</Name>
-      <Importer>XImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\PlayerModel\mat_ship.bmp">
-      <Name>mat_ship</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\Enemy\spaceship01.x">
       <Name>spaceship01</Name>
       <Importer>XImporter</Importer>

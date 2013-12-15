@@ -22,10 +22,6 @@ namespace GP3Coursework
         public const float EnemyMaxSpeed = 10.0f;
         public const float EnemySpeedAdjustment = 2.5f;
         public const float EnemyScalar = 0.01f;
-        //Planet constants
-        public const int NumPlanetEarth = 1;
-
-        public const int NumPlanetIce = 1; 
         //collision constants
         public const float AsteroidBoundingSphereScale = 0.025f;  //50% size
         public const float ShipBoundingSphereScale = 0.5f;  //50% size

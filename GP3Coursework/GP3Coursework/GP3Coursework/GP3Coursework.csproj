@@ -112,7 +112,7 @@
     <Compile Include="cEnemy.cs" />
     <Compile Include="GameConstants.cs" />
     <Compile Include="Laser.cs" />
-    <Compile Include="Planets.cs" />
+    <Compile Include="PlanetEarth.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />

@@ -6,25 +6,25 @@ using Microsoft.Xna.Framework;
 
 namespace GP3Coursework
 {
-    struct Planets
+    struct PlanetEarth
     {
         public Vector3 position;
-        public Vector3 direction; 
+        public Vector3 direction;
         public float speed;
         public bool isActive;
 
-        public void Update (float delta)
+        public void Update(float delta)
         {
             position += direction * speed *
-                        GameConstants.EnemySpeedAdjustment * delta;
+                        GameConstants.AsteroidSpeedAdjustment * delta;
             if (position.X > GameConstants.PlayfieldSizeX)
-                position.X -= 2 * GameConstants.PlayfieldSizeX;
+                position.X -= 0 * GameConstants.PlayfieldSizeX;
             if (position.X < -GameConstants.PlayfieldSizeX)
-                position.X += 2 * GameConstants.PlayfieldSizeX;
+                position.X += 0 * GameConstants.PlayfieldSizeX;
             if (position.Z > GameConstants.PlayfieldSizeZ)
-                position.Z -= 2 * GameConstants.PlayfieldSizeZ;
+                position.Z -= 0 * GameConstants.PlayfieldSizeZ;
             if (position.Z < -GameConstants.PlayfieldSizeZ)
-                position.Z += 2 * GameConstants.PlayfieldSizeZ;
+                position.Z += 0 * GameConstants.PlayfieldSizeZ;
         }
     }
 }
