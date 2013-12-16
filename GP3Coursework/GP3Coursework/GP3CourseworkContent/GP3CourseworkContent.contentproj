@@ -42,25 +42,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\tardis1314.FBX">
-      <Name>tardis1314</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Models\TardisMap.tga">
-      <Name>TardisMap</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\PlayerModel\fighter.X">
       <Name>fighter</Name>
       <Importer>XImporter</Importer>
       <Processor>ModelProcessor</Processor>
-      <ProcessorParameters_RotationY>-20</ProcessorParameters_RotationY>
     </Compile>
   </ItemGroup>
   <ItemGroup>

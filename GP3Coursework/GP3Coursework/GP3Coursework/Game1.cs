@@ -47,7 +47,7 @@ namespace GP3Coursework
 
         // Set the position of the model in world space, and set the rotation.
         private Vector3 mdlPosition = Vector3.Zero;
-        private float mdlRotation = 0.0f;
+        private float mdlRotation = 30.0f;
         private Vector3 mdlVelocity = Vector3.Zero; 
 
         // create an array of enemy daleks
@@ -84,18 +84,18 @@ namespace GP3Coursework
 
         private cCamera cam = new cCamera();
         // Set the position of the camera in world space, for our view matrix.
-        private Vector3 cameraPosition = new Vector3(0.0f, 3.0f, 300.0f);
-        private Matrix viewMatrix;
-        private Matrix projectionMatrix;
+       // private Vector3 cameraPosition = new Vector3(0.0f, 3.0f, 300.0f);
+       // private Matrix viewMatrix;
+        //private Matrix projectionMatrix;
 
         private void InitializeTransform()
         {
             aspectRatio = graphics.GraphicsDevice.Viewport.AspectRatio;
 
-            viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
+          //  viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
 
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.ToRadians(90), aspectRatio, 1.0f, 350.0f);
+            //projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
+              //  MathHelper.ToRadians(90), aspectRatio, 1.0f, 350.0f);
 
         }
 
@@ -108,9 +108,9 @@ namespace GP3Coursework
             Vector3 mdlVelocityAdd = Vector3.Zero;
 
             // Find out what direction we should be thrusting, using rotation.
-            mdlVelocityAdd.X = -(float)Math.Sin(mdlRotation);
-            mdlVelocityAdd.Z = -(float)Math.Cos(mdlRotation);
-
+           mdlVelocityAdd.X = -(float)Math.Sin(mdlRotation);
+           mdlVelocityAdd.Z = -(float)Math.Cos(mdlRotation);
+ 
             if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.DPad.Left == ButtonState.Pressed)
             {
                 // Rotate left.
@@ -179,7 +179,7 @@ namespace GP3Coursework
             }
 
             // Check to see if the player is shooting
-            if (keyboardState.IsKeyDown(Keys.Space) || lastState.IsKeyDown(Keys.Space) || gamePadState.Buttons.X == ButtonState.Pressed)
+            if (keyboardState.IsKeyDown(Keys.Space) || lastState.IsKeyDown(Keys.Space))
             {
                 //add another bullet.  Find an inactive bullet slot and use it
                 //if all bullets slots are used, ignore the user input
