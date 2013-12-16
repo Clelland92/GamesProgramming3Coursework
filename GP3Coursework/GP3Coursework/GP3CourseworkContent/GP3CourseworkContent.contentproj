@@ -71,7 +71,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Effects\" />
+    <Compile Include="Audio\Star Wars- The Imperial March.mp3">
+      <Name>Imperial March</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\Bluebell.mp3">
@@ -193,6 +197,27 @@
   <ItemGroup>
     <Compile Include="Models\Enemy\mat_ship.bmp">
       <Name>mat_ship</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Environment\Satellite\mat_sate.bmp">
+      <Name>mat_sate</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Environment\Satellite\satellite.x">
+      <Name>satellite</Name>
+      <Importer>XImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Environment\Satellite\mat_satellite_1.bmp">
+      <Name>mat_satellite_1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

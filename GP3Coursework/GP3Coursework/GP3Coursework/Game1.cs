@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+
 namespace GP3Coursework
 {
     /// <summary>
@@ -47,7 +48,7 @@ namespace GP3Coursework
         // Set the position of the model in world space, and set the rotation.
         private Vector3 mdlPosition = Vector3.Zero;
         private float mdlRotation = 0.0f;
-        private Vector3 mdlVelocity = Vector3.Zero;
+        private Vector3 mdlVelocity = Vector3.Zero; 
 
         // create an array of enemy daleks
         private Model mdlAsteroid;
@@ -62,18 +63,26 @@ namespace GP3Coursework
         // Create planets
         private Model mdlPlanetEarth;
         private Matrix[] mdlPlanetEarthTransforms;
-        private Vector3 mdlEarthPos = new Vector3(200, 10, 0);
+        private Vector3 mdlEarthPos = new Vector3(200, 0, 0);
+
+        // Create Satellite 
+        private Model mdlSatellite;
+        private Matrix[] mdlSatelliteTransfroms;
+        private Vector3 mdlSatellitePos = new Vector3(-200, 3, 0);
         
         // Create an array enemy fighters  
         private Model mdlEnemy;
         private Matrix[] mdlEnemyTransforms;
         private Enemy[] EnemyList = new Enemy[GameConstants.NumEnemy];
 
+        private bool soundPlayer = true;
+
         private Random random = new Random();
 
         private KeyboardState lastState;
-        private int hitCount = 10;
+        private int hitCount;
 
+        private cCamera cam = new cCamera();
         // Set the position of the camera in world space, for our view matrix.
         private Vector3 cameraPosition = new Vector3(0.0f, 3.0f, 300.0f);
         private Matrix viewMatrix;
@@ -86,13 +95,14 @@ namespace GP3Coursework
             viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
 
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.ToRadians(60), aspectRatio, 1.0f, 350.0f);
+                MathHelper.ToRadians(90), aspectRatio, 1.0f, 350.0f);
 
         }
 
         private void MoveModel()
         {
             KeyboardState keyboardState = Keyboard.GetState();
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
             // Create some velocity if the right trigger is down.
             Vector3 mdlVelocityAdd = Vector3.Zero;
@@ -101,19 +111,19 @@ namespace GP3Coursework
             mdlVelocityAdd.X = -(float)Math.Sin(mdlRotation);
             mdlVelocityAdd.Z = -(float)Math.Cos(mdlRotation);
 
-            if (keyboardState.IsKeyDown(Keys.Left))
+            if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.DPad.Left == ButtonState.Pressed)
             {
                 // Rotate left.
                 mdlRotation -= -1.0f * 0.10f;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.Right) || gamePadState.DPad.Right == ButtonState.Pressed)
             {
                 // Rotate right.
                 mdlRotation -= 1.0f * 0.10f;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Up))
+            if (keyboardState.IsKeyDown(Keys.Up) || gamePadState.DPad.Up == ButtonState.Pressed)
             {
                 // Rotate left.
                 // Create some velocity if the right trigger is down.
@@ -122,7 +132,7 @@ namespace GP3Coursework
                 mdlVelocity += mdlVelocityAdd;
             }
 
-            if (keyboardState.IsKeyDown(Keys.Down))
+            if (keyboardState.IsKeyDown(Keys.Down) || gamePadState.DPad.Down == ButtonState.Pressed)
             {
                 // Rotate left.
                 // Now scale our direction by how hard the trigger is down.
@@ -131,7 +141,7 @@ namespace GP3Coursework
             }
 
             // Resets the game to initial setup when the R key is pressed
-            if (keyboardState.IsKeyDown(Keys.R)) 
+            if (keyboardState.IsKeyDown(Keys.R) || gamePadState.Buttons.Start == ButtonState.Pressed) 
             {
                 mdlVelocity = Vector3.Zero;
                 mdlPosition = Vector3.Zero;
@@ -140,19 +150,36 @@ namespace GP3Coursework
             }
 
             // Mutes the background Music
-            if (keyboardState.IsKeyDown(Keys.M))
+            if (keyboardState.IsKeyDown(Keys.M) || gamePadState.Buttons.RightShoulder == ButtonState.Pressed && soundPlayer == true)
             {
-                MediaPlayer.IsMuted = true;
+                soundPlayer = false;
             }
 
-            // Mutes all other sounds 
-            if (keyboardState.IsKeyDown(Keys.M))
+            // Unmutes the background Music
+            if (keyboardState.IsKeyDown(Keys.N) || gamePadState.Buttons.LeftShoulder == ButtonState.Pressed && soundPlayer == false)
+            {
+                soundPlayer = true;
+            }
+
+            // Mutes all other sound effects 
+            if (keyboardState.IsKeyDown(Keys.M) || gamePadState.Buttons.RightShoulder == ButtonState.Pressed)
             {
                 SoundEffect.MasterVolume = 0;
             }
 
+            // Unmutes all other sound effects 
+            if (keyboardState.IsKeyDown(Keys.N) || gamePadState.Buttons.LeftShoulder == ButtonState.Pressed )
+            {
+                SoundEffect.MasterVolume = 1;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.C) && lastState.IsKeyUp(Keys.C))
+            {
+                cam.SwitchCameraMode();
+            }
+
             // Check to see if the player is shooting
-            if (keyboardState.IsKeyDown(Keys.Space) || lastState.IsKeyDown(Keys.Space))
+            if (keyboardState.IsKeyDown(Keys.Space) || lastState.IsKeyDown(Keys.Space) || gamePadState.Buttons.X == ButtonState.Pressed)
             {
                 //add another bullet.  Find an inactive bullet slot and use it
                 //if all bullets slots are used, ignore the user input
@@ -233,8 +260,8 @@ namespace GP3Coursework
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();
-                    effect.Projection = projectionMatrix;
-                    effect.View = viewMatrix;
+                    //effect.Projection = projectionMatrix;
+                   // effect.View = viewMatrix;
                 }
             }
             return absoluteTransforms;
@@ -249,7 +276,8 @@ namespace GP3Coursework
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.World = absoluteBoneTransforms[mesh.ParentBone.Index] * modelTransform;
-                    effect.View = viewMatrix;
+                    effect.View = cam.viewMatrix;
+                    effect.Projection = cam.projectionMatrix;
                 }
                 //Draw the mesh, will use the effects set above.
                 mesh.Draw();
@@ -317,7 +345,7 @@ namespace GP3Coursework
             //-------------------------------------------------------------
             // added to load Song   
             //-------------------------------------------------------------
-            bkgMusic = Content.Load<Song>(".\\Audio\\DoctorWhotheme11");
+            bkgMusic = Content.Load<Song>(".\\Audio\\Imperial March");
             MediaPlayer.Play(bkgMusic);
             MediaPlayer.IsRepeating = true;
             songInfo = "Song: " + bkgMusic.Name + " Song Duration: " + bkgMusic.Duration.Minutes + ":" + bkgMusic.Duration.Seconds;
@@ -334,6 +362,8 @@ namespace GP3Coursework
             mdlPlanetEarthTransforms = SetupEffectTransformDefaults(mdlPlanetEarth);
             mdlEnemy = Content.Load<Model>(".\\Models\\Enemy\\spaceship01");
             mdlEnemyTransforms = SetupEffectTransformDefaults(mdlEnemy);
+            mdlSatellite = Content.Load<Model>(".\\Models\\Environment\\Satellite\\satellite");
+            mdlSatelliteTransfroms = SetupEffectTransformDefaults(mdlSatellite);
             //-------------------------------------------------------------
             // added to load SoundFX's
             //-------------------------------------------------------------
@@ -342,6 +372,7 @@ namespace GP3Coursework
             firingSound = Content.Load<SoundEffect>("Audio\\shot007");
             starShipSoundInstance = starShipSound.CreateInstance(); 
             starShipSoundInstance.Play();
+
              // TODO: use this.Content to load your game content here
         }
 
@@ -365,9 +396,6 @@ namespace GP3Coursework
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
-            updateCamera(modelTransform);
-
             // TODO: Add your update logic here
             MoveModel();
 
@@ -378,6 +406,22 @@ namespace GP3Coursework
             mdlVelocity *= 0.95f;
 
             float timeDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            //Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
+            //updateCamera(modelTransform);
+            // Camera update 
+            Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
+            cam.Update(modelTransform);
+
+            // checks to see if sound has been muted 
+            if(soundPlayer == true)
+            {
+                MediaPlayer.Resume();
+            }
+            else if (soundPlayer == false)
+            {
+                MediaPlayer.Pause();
+            }
 
             // Gets position of each asteroid in the game 
             for (int i = 0; i < GameConstants.NumAsteroids; i++)
@@ -403,11 +447,7 @@ namespace GP3Coursework
                 }
             }
 
-
-            BoundingSphere StarShipSphere =
-              new BoundingSphere(mdlPosition,
-                       mdlStarShip.Meshes[0].BoundingSphere.Radius *
-                             GameConstants.ShipBoundingSphereScale);
+            BoundingSphere StarShipSphere = new BoundingSphere(mdlPosition, mdlStarShip.Meshes[0].BoundingSphere.Radius * GameConstants.ShipBoundingSphereScale);
 
             //Check for collisions  
             for (int i = 0; i < AsteroidList.Length; i++)
@@ -441,7 +481,6 @@ namespace GP3Coursework
                             //laserList[k].isActive = false;
                             break; //no need to check other bullets
                         }
-
                     }
 
                     //Check for collisions  
@@ -476,26 +515,12 @@ namespace GP3Coursework
                                     //laserList[k].isActive = false;
                                     break; //no need to check other bullets
                                 }
-
                             }
                         }
                     }
                     base.Update(gameTime);
                 }
             }
-        }
-
-        // Code that allows the camera to be in a third person viewpoint
-        public void updateCamera(Matrix objectToFollow)//send catWorldMatrix here
-        {
-            //  Vector3 targetOffset = new Vector3(0f, 0f, -20f);
-            float trailDistance = 10f;
-            float heightDistance = 10f;
-            float sideDistance = 30f;
-            float targetOffset = 10f;
-            Vector3 camPos = objectToFollow.Translation + (objectToFollow.Backward * trailDistance) + (objectToFollow.Up * heightDistance) + (objectToFollow.Right * sideDistance);
-            Vector3 camTarget = objectToFollow.Translation;
-            viewMatrix = Matrix.CreateLookAt(camPos, camTarget, Vector3.Up);
         }
 
         /// <summary>
@@ -534,9 +559,11 @@ namespace GP3Coursework
                 }
             }
 
-            Matrix earthTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlEarthPos);
-            DrawModel(mdlPlanetEarth, earthTransform, mdlPlanetEarthTransforms);
+            Matrix modelEarthTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlEarthPos);
+            DrawModel(mdlPlanetEarth, modelEarthTransform, mdlPlanetEarthTransforms);
 
+            Matrix modelSatelliteTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlSatellitePos);
+            DrawModel(mdlSatellite, modelSatelliteTransform, mdlSatelliteTransfroms);
 
             Matrix modelTransform = Matrix.CreateRotationY(mdlRotation) * Matrix.CreateTranslation(mdlPosition);
             DrawModel(mdlStarShip, modelTransform, mdlStarShipTransforms);

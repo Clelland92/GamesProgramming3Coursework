@@ -13,9 +13,6 @@ Content\Models\PlayerModel\psionic.xnb
 Content\Models\PlayerModel\psionic_0.xnb
 Content\Models\Laser\LaserMap.xnb
 Content\Models\Laser\LaserMap_0.xnb
-Content\Models\PlayerModel\mat_ship.xnb
-Content\Models\PlayerModel\spaceship01.xnb
-Content\Models\PlayerModel\mat_ship_0.xnb
 Content\Models\Environment\Asteroid\mat_aste.xnb
 Content\Models\Environment\Planets\mat_planet_earth_1.xnb
 Content\Models\Environment\Planets\mat_plan.xnb
@@ -28,6 +25,12 @@ Content\Models\Enemy\mat_ship.xnb
 Content\Models\Enemy\mat_ship_0.xnb
 Content\Models\PlayerModel\fighter.xnb
 Content\Models\Enemy\spaceship01.xnb
+Content\Audio\Imperial March.xnb
+Content\Models\Environment\Satellite\mat_sate.xnb
+Content\Models\Environment\Satellite\satellite.xnb
+Content\Models\Environment\Satellite\mat_sate_0.xnb
+Content\Models\Environment\Satellite\mat_satellite_1.xnb
 Content\Audio\DoctorWhotheme11.wma
 Content\Audio\Bluebell.wma
 Content\Audio\tardis.wma
+Content\Audio\Imperial March.wma
