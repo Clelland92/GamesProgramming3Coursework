@@ -16,14 +16,7 @@
   <td>One of these will be attached to the player character</td>
 </tr>
 <tr>
-	<td></td>
-	<td></td>
-</tr>
-<tr>
-	<td></td>
-	<td></td>
-<tr>
-</table>
+<td>Functions allow for player input</td>
  
 <p></p>
 <b></b> 
